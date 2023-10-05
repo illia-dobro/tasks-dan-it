@@ -1,9 +1,8 @@
 import { useAppDispatch, useAppSelector } from '../../common/hooks/hooks';
-import { saveLog, clear, addTime } from '../store/slice';
 import { Second } from '../enums/enums';
-import { ValueOf } from '../../types/types';
-
-type seconds = ValueOf<typeof Second>;
+import { formatLog } from '../helpers/format-date';
+import { saveLog, clear, addTime } from '../store/slice';
+import { seconds } from '../types/types';
 
 let initial = 0;
 
@@ -11,25 +10,6 @@ const Timer = () => {
   const dispatch = useAppDispatch();
 
   const { logs } = useAppSelector(({ timer }) => timer);
-
-  const formatLog = (time: seconds) => {
-    const now = new Date();
-
-    const dateNow =
-      now.getHours() +
-      ':' +
-      String(now.getMinutes()).padStart(2, '0') +
-      ':' +
-      String(now.getSeconds()).padStart(2, '0');
-    const dateWhenTimerStart =
-      now.getHours() +
-      ':' +
-      String(now.getMinutes()).padStart(2, '0') +
-      ':' +
-      String(now.getSeconds() - time).padStart(2, '0');
-
-    return `№${time} ${dateNow} - ${dateWhenTimerStart}`;
-  };
 
   function sleep(seconds: number) {
     return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
