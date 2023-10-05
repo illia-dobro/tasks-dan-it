@@ -1,41 +1,44 @@
 import { useAppDispatch, useAppSelector } from '../../common/hooks/hooks';
-import { saveLog, clear } from '../store/slice';
+import { saveLog, clear, addTime } from '../store/slice';
 import { Second } from '../enums/enums';
 import { ValueOf } from '../../types/types';
 
 type seconds = ValueOf<typeof Second>;
 
-let initial = 0
-
+let initial = 0;
 
 const Timer = () => {
   const dispatch = useAppDispatch();
 
-  const st = useAppSelector(({timer}) => timer.log)
-  console.log( st);
-
+  const { logs } = useAppSelector(({ timer }) => timer);
 
   const formatLog = (time: seconds) => {
     const now = new Date();
-    const dateNow = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
-    const dateWhenTimerStart = now.getHours() + ':' + now.getMinutes() + ':' + (now.getSeconds() - time);
 
-    return `№${time} ${dateNow} ${dateWhenTimerStart} (${time} sec)`
+
+
+    const dateNow =
+      now.getHours() + ':' + String(now.getMinutes()).padStart(2, "0") + ':' + String(now.getSeconds()).padStart(2, "0");
+    const dateWhenTimerStart =
+      now.getHours() + ':' + String(now.getMinutes()).padStart(2, "0") + ':' + String((now.getSeconds()- time)).padStart(2, "0") ;
+
+    return `№${time} ${dateNow} - ${dateWhenTimerStart}`;
+  };
+
+  function sleep(seconds: number) {
+    return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
   }
 
-  function sleep(seconds: number ) {
-    return new Promise(resolve => setTimeout(resolve, seconds * 1000));
-}
-
-
   const handleClick = async (time: seconds) => {
-      await sleep(initial);
-      initial += time;
-      setTimeout(() => {
-        initial -= time;
-        dispatch(saveLog(formatLog(time)));
-        }, time * 1000);
-    }
+    await sleep(initial);
+    initial += time;
+    setTimeout(() => {
+      initial -= time;
+      dispatch(addTime(time));
+
+      dispatch(saveLog(formatLog(time)));
+    }, time * 1000);
+  };
 
   return (
     <>
@@ -63,7 +66,11 @@ const Timer = () => {
           Clear
         </button>
       </div>
-      <ul>{st.map(item => <li key={item}>{item}</li>)}</ul>
+      <ul>
+        {logs.map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </ul>
     </>
   );
 };
