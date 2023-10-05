@@ -58,11 +58,13 @@ const Timer = () => {
           Clear
         </button>
       </div>
-      <ul className="mt-4 flex flex-col items-center">
-        {logs.map((item) => (
-          <li key={item}>{item}</li>
-        ))}
-      </ul>
+      <div className="flex justify-center">
+        <ul className="mt-4 flex flex-col">
+          {logs.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      </div>
     </>
   );
 };
