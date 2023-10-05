@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../common/hooks/hooks';
 import { Second } from '../enums/enums';
 import { formatLog } from '../helpers/format-date';
@@ -5,9 +6,13 @@ import { saveLog, clear, addTime } from '../store/slice';
 import { seconds } from '../types/types';
 
 let initial = 0;
+let timeCurrent = 0;
+let isTimer = false;
 
 const Timer = () => {
+
   const dispatch = useAppDispatch();
+
 
   const { logs } = useAppSelector(({ timer }) => timer);
 
@@ -15,16 +20,23 @@ const Timer = () => {
     return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
   }
 
-  const handleClick = async (time: seconds) => {
-    initial += time;
-    await sleep(initial - time);
 
+  const handleClick = async (time: seconds) => {
+      if(!isTimer){
+        timeCurrent = Date.now();
+      }
+      initial += time;
+      await sleep(initial - time - (Date.now() - timeCurrent)/1000);
+      isTimer = true
+      //timeCurrent -= Date.now()
     setTimeout(() => {
       initial -= time;
+      isTimer = false;
       dispatch(addTime(time));
       dispatch(saveLog(formatLog(time)));
     }, time * 1000);
   };
+
 
   return (
     <>
@@ -52,7 +64,7 @@ const Timer = () => {
           Clear
         </button>
       </div>
-      <ul>
+      <ul className='mt-4 flex flex-col items-center'>
         {logs.map((item) => (
           <li key={item}>{item}</li>
         ))}

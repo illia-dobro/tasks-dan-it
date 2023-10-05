@@ -16,7 +16,6 @@ export const timerSlice = createSlice({
   initialState,
   reducers: {
     saveLog: (state, action: PayloadAction<string>) => {
-      console.log(state.total);
       state.logs.push(action.payload + ` (${state.total} sec)`);
     },
     addTime: (state, action: PayloadAction<number>) => {

@@ -14,7 +14,7 @@ const formatLog = (time: seconds) => {
     ':' +
     String(now.getMinutes()).padStart(2, '0') +
     ':' +
-    String(now.getSeconds() - time).padStart(2, '0');
+    String(+String(now.getSeconds()).padStart(2, '0') - time).padStart(2, '0');
 
   return `№${time} ${dateNow} - ${dateWhenTimerStart}`;
 };
