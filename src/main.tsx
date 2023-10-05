@@ -15,7 +15,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "task-1",
-        element: <p>dfdf</p>,
+        element: <Timer/>,
       },
     ],
   },
