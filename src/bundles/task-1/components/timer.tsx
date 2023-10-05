@@ -15,12 +15,18 @@ const Timer = () => {
   const formatLog = (time: seconds) => {
     const now = new Date();
 
-
-
     const dateNow =
-      now.getHours() + ':' + String(now.getMinutes()).padStart(2, "0") + ':' + String(now.getSeconds()).padStart(2, "0");
+      now.getHours() +
+      ':' +
+      String(now.getMinutes()).padStart(2, '0') +
+      ':' +
+      String(now.getSeconds()).padStart(2, '0');
     const dateWhenTimerStart =
-      now.getHours() + ':' + String(now.getMinutes()).padStart(2, "0") + ':' + String((now.getSeconds()- time)).padStart(2, "0") ;
+      now.getHours() +
+      ':' +
+      String(now.getMinutes()).padStart(2, '0') +
+      ':' +
+      String(now.getSeconds() - time).padStart(2, '0');
 
     return `№${time} ${dateNow} - ${dateWhenTimerStart}`;
   };
@@ -30,12 +36,12 @@ const Timer = () => {
   }
 
   const handleClick = async (time: seconds) => {
-    await sleep(initial);
     initial += time;
+    await sleep(initial - time);
+
     setTimeout(() => {
       initial -= time;
       dispatch(addTime(time));
-
       dispatch(saveLog(formatLog(time)));
     }, time * 1000);
   };
