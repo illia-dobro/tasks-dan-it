@@ -1,18 +1,41 @@
-import { useAppSelector, useAppDispatch } from '../../common/hooks/hooks';
-import { incrementByAmount } from '../store/slice';
+import { useAppDispatch, useAppSelector } from '../../common/hooks/hooks';
+import { saveLog, clear } from '../store/slice';
 import { Second } from '../enums/enums';
 import { ValueOf } from '../../types/types';
 
-type seconds = ValueOf<typeof Second>
+type seconds = ValueOf<typeof Second>;
+
+let initial = 0
+
 
 const Timer = () => {
   const dispatch = useAppDispatch();
 
-  // const st = useAppSelector(({timer}) => timer)
-  // console.log( st);
-  const handleClick = (numberSeconds: seconds ) => {
-    dispatch(incrementByAmount(numberSeconds));
-  };
+  const st = useAppSelector(({timer}) => timer.log)
+  console.log( st);
+
+
+  const formatLog = (time: seconds) => {
+    const now = new Date();
+    const dateNow = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
+    const dateWhenTimerStart = now.getHours() + ':' + now.getMinutes() + ':' + (now.getSeconds() - time);
+
+    return `№${time} ${dateNow} ${dateWhenTimerStart} (${time} sec)`
+  }
+
+  function sleep(seconds: number ) {
+    return new Promise(resolve => setTimeout(resolve, seconds * 1000));
+}
+
+
+  const handleClick = async (time: seconds) => {
+      await sleep(initial);
+      initial += time;
+      setTimeout(() => {
+        initial -= time;
+        dispatch(saveLog(formatLog(time)));
+        }, time * 1000);
+    }
 
   return (
     <>
@@ -36,8 +59,11 @@ const Timer = () => {
         >
           {Second.THREE} sec
         </button>
-        <button className="btn btn-primary">Clear</button>
+        <button onClick={() => dispatch(clear())} className="btn btn-primary">
+          Clear
+        </button>
       </div>
+      <ul>{st.map(item => <li key={item}>{item}</li>)}</ul>
     </>
   );
 };
