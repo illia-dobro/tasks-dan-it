@@ -1,11 +1,12 @@
 import './App.css'
+import NavBar from './bundles/common/components/navbar'
 
 function App() {
 
 
   return (
     <>
-      <button className="btn btn-primary">Button</button>
+      <NavBar/>
     </>
   )
 }
